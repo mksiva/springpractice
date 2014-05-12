@@ -1,0 +1,69 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+        http://www.springframework.org/schema/data/mongo
+        http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd">
+
+	<context:component-scan base-package="com.tt.common" />
+	<bean
+		class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor" />
+
+	<mvc:annotation-driven />
+
+	<mongo:mongo host="127.0.0.1" port="27017" />
+	<mongo:db-factory dbname="yourdb" />
+
+	<!-- <bean id="jsonHttpMessageConverter" class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" 
+		/> <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver"> 
+		<property name="mediaTypes"> <map> <entry key="json" value="application/json" 
+		/> </map> </property> <property name="defaultViews"> <list> <bean class="org.springframework.web.servlet.view.json.MappingJacksonJsonView"> 
+		<property name="objectMapper"> <ref bean="JacksonObjectMapper" /> </property> 
+		</bean> </list> </property> <property name="favorPathExtension" value="false" 
+		/> <property name="favorParameter" value="true" /> <property name="useNotAcceptableStatusCode" 
+		value="true" /> </bean> <bean id="JacksonObjectMapper" class="org.codehaus.jackson.map.ObjectMapper" 
+		/> -->
+	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+		<constructor-arg name="mongoDbFactory" ref="mongoDbFactory" />
+	</bean>
+	<!-- <bean id="modulesDAO" class="com.tt.common.dao.ModulesDAOImpl"> <property 
+		name="sessionFactory"> <ref bean="sessionFactory" /> </property> </bean> 
+		<bean id="appConfigService" class="com.tt.common.service.AppConfigServiceImpl"> 
+		</bean> <bean id="commonDAO" class="com.tt.common.dao.CommonDAOImpl"> <property 
+		name="sessionFactory"> <ref bean="sessionFactory" /> </property> </bean> -->
+
+	<bean id="modulesDAO" class="com.tt.common.dao.ModulesDAOImpl"></bean>
+
+	<!-- Configure to plugin JSON as request and response in method handler -->
+	<bean
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<ref bean="jsonMessageConverter" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- Configure bean to convert JSON to POJO and vice versa -->
+	<bean id="jsonMessageConverter"
+		class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+	</bean>
+
+	<!-- <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean"> 
+		<property name="configLocation" value="classpath:hibernate.cfg.xml"> </property> 
+		<property name="annotatedClasses"> <list> <value>com.tt.common.model.AppConfig</value> 
+		<value>com.tt.common.model.Modules</value> </list> </property> <property 
+		name="hibernateProperties"> <props> <prop key="hibernate.cache.use_query_cache">false</prop> 
+		<prop key="hibernate.cache.use_second_level_cache">false</prop> <prop key="hibernate.show_sql">false</prop> 
+		<prop key="hibernate.validator.apply_to_ddl">false</prop> <prop key="hibernate.validator.autoregister_listeners">false</prop> 
+		</props> </property> </bean> <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager"> 
+		<property name="sessionFactory"> <ref local="sessionFactory" /> </property> 
+		</bean> -->
+</beans>
