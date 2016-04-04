@@ -1,0 +1,1 @@
+Sameple Spring MVC application
